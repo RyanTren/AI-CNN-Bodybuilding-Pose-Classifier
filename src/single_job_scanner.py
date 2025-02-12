@@ -31,3 +31,4 @@ if __name__ == "__main__":
     while(True):
         url = input("Enter job URL: ")
         extract_elements(url)
+        #test with: https://www.indeed.com/viewjob?jk=b9a21b341a84ad53&tk=1ijtuerlnl53487a&from=serp&vjs=3
