@@ -20,8 +20,7 @@ this is a rough draft...
 ### Proposed Approach
 * Data Collection: Scrape job postings from LinkedIn, Indeed, and Glassdoor, labeling them as real or fake (manually or via crowdsourcing).
 
-Possibly use Selenium or Playwright for Webscraping - Colin 
-
+Playwright/BeautifulSoup for Webscraping - Colin 
 
 * Feature Extraction: Identify key factors:
 * Text-based: Keywords like "quick money," "no experience needed," "startup fee."
@@ -32,7 +31,7 @@ Possibly use Selenium or Playwright for Webscraping - Colin
 * Evaluation Metrics: Accuracy, precision-recall, F1-score.
 
 ### Implementation
-* Tech Stack: Python, TensorFlow/PyTorch, BeautifulSoup/Scrapy for web scraping.
+* Tech Stack: Python, Playwright, TensorFlow/PyTorch, BeautifulSoup/Scrapy for web scraping.
 * Dataset: Kaggle’s fake job posting dataset + newly collected listings.
 * Training & Testing: Split into 80/20 for model validation.
 
