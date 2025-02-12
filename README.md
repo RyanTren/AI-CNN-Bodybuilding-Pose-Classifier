@@ -20,7 +20,8 @@ this is a rough draft...
 ### Proposed Approach
 * Data Collection: Scrape job postings from LinkedIn, Indeed, and Glassdoor, labeling them as real or fake (manually or via crowdsourcing).
 
-Playwright/BeautifulSoup for Webscraping - Colin 
+Playwright/BeautifulSoup for Web scraping - Colin
+[Article on Web scrapping with Playwright using Python](https://scrapfly.io/blog/web-scraping-with-playwright-and-python/)
 
 * Feature Extraction: Identify key factors:
 * Text-based: Keywords like "quick money," "no experience needed," "startup fee."
