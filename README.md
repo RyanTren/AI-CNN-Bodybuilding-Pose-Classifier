@@ -19,6 +19,10 @@ this is a rough draft...
 
 ### Proposed Approach
 * Data Collection: Scrape job postings from LinkedIn, Indeed, and Glassdoor, labeling them as real or fake (manually or via crowdsourcing).
+
+Possibly use Selenium or Playwright for Webscraping - Colin 
+
+
 * Feature Extraction: Identify key factors:
 * Text-based: Keywords like "quick money," "no experience needed," "startup fee."
 * Structural: Unusual formatting, missing company details.
