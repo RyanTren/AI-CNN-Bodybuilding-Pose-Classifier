@@ -23,33 +23,36 @@ np.set_printoptions(suppress=True)
 model = load_model("src\\ComputerVision\\keras_model.h5", compile=False)
 class_names = open("src\\ComputerVision\\labels.txt", "r").readlines()
 
-# Prompt user for an image path
-image_path = input("Enter the path to an image: ").strip()
-
-# Check if the file exists
-if not os.path.exists(image_path):
-    print("Image file does not exist.")
-    exit(1)
-
-# Load and preprocess the image
-img = Image.open(image_path).convert("RGB")
-# Resize and crop the image to 224x224 using LANCZOS resampling
-img = ImageOps.fit(img, (224, 224), Image.Resampling.LANCZOS)
-# Convert image to numpy array and normalize
-img_array = np.asarray(img, dtype=np.float32)
-normalized_img = (img_array / 127.5) - 1
-# Add batch dimension
-input_data = normalized_img.reshape(1, 224, 224, 3)
-
-# Perform prediction
-prediction = model.predict(input_data)
-index = np.argmax(prediction)
-predicted_class = class_names[index]
-confidence_score = prediction[0][index]
-
-# Clear the terminal and reprint working directory for consistency
+# Clear screen for Windows or Unix-based systems
 clear_command = 'cls' if os.name == 'nt' else 'clear'
 os.system(clear_command)
 print("Current working directory:", working_directory)
-print("Class:", predicted_class[2:], end=" ")
-print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+
+while(True):
+    # Prompt user for an image path
+    image_path = input("Enter the path to an image: ").strip()
+
+    # Check if the file exists
+    if not os.path.exists(image_path):
+        print("Image file does not exist.")
+    else:
+        # Load and preprocess the image
+        img = Image.open(image_path).convert("RGB")
+        # Resize and crop the image to 224x224 using LANCZOS resampling
+        img = ImageOps.fit(img, (224, 224), Image.Resampling.LANCZOS)
+        # Convert image to numpy array and normalize
+        img_array = np.asarray(img, dtype=np.float32)
+        normalized_img = (img_array / 127.5) - 1
+        # Add batch dimension
+        input_data = normalized_img.reshape(1, 224, 224, 3)
+
+        # Perform prediction
+        prediction = model.predict(input_data)
+        index = np.argmax(prediction)
+        predicted_class = class_names[index]
+        confidence_score = prediction[0][index]
+
+
+        print("Class:", predicted_class[2:], end=" ")
+        print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+
