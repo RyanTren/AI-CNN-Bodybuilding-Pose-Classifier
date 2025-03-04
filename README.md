@@ -1,42 +1,41 @@
-# AI-Based-Fake-Job-Posting-Detector
+# AI-Image Processing Model on Predicting Winning Bodybuilder Contestants 
 
 this is a rough draft...
 
-### Problem Definition
-* Many job seekers fall for fraudulent job listings, leading to wasted time, financial loss, and identity theft.
-* Fake job postings use deceptive language, request upfront payments, or mimic legitimate companies.
-* Current methods rely on manual reporting, which is slow and inefficient.
+### Define Clear Objectives
+- What makes a winning bodybuilding pose?
+- How will AI determine a better pose objectively?
+- Will this be real-time evaluation or post-event analysis?
+### Research & Literature Review
+- Study pose estimation models like OpenPose, TensorFlow PoseNet, and Google Teachable Machine.
+- Read IFBB’s official judging criteria (IFBB rules).
+- Review machine learning applications in sports analytics.
+### Dataset Collection
+Options for dataset:
+- Download images of bodybuilding poses from public sources.
+- Use competition footage (YouTube, IFBB archives).
+- Take your own photos in controlled environments (gym/stage).
 
-### Background & Motivation
-* Job seekers (especially new graduates) struggle to identify fake listings.
-* Employers face reputation damage from fraudulent postings under their name.
-* AI-based classification could provide real-time fraud detection.
+Key considerations:
+- Annotations: Label images based on symmetry, muscle definition, pose correctness.
+- Preprocessing: Use OpenCV to remove background noise, enhance contrast, and normalize lighting.
+### Select & Train AI Model
+Baseline Model: Start with Google Teachable Machine (no-code approach).
+Advanced Model: Train a deep learning model using:
+TensorFlow/Keras for CNN-based image classification
+Pose estimation models like PoseNet for body alignment analysis
+OpenCV for image filtering, edge detection, and contrast analysis
 
-### Literature Review
-* Previous research on spam detection (email phishing, social media scams).
-* Studies on adversarial attacks in NLP to bypass AI-based security systems.
-* Common linguistic markers of fraud (e.g., excessive urgency, vague job descriptions).
-
-### Proposed Approach
-* Data Collection: Scrape job postings from LinkedIn, Indeed, and Glassdoor, labeling them as real or fake (manually or via crowdsourcing).
-
-Playwright/BeautifulSoup for Web scraping - Colin
-[Article on Web scrapping with Playwright using Python](https://scrapfly.io/blog/web-scraping-with-playwright-and-python/)
-
-* Feature Extraction: Identify key factors:
-* Text-based: Keywords like "quick money," "no experience needed," "startup fee."
-* Structural: Unusual formatting, missing company details.
-* Behavioral: Employer response times, email domains.
-* AI Model: Train a supervised learning classifier (Random Forest, BERT, or LSTM) to predict fraud likelihood.
-* Adversarial ML: Simulate how fraudsters might alter postings to bypass detection.
-* Evaluation Metrics: Accuracy, precision-recall, F1-score.
-
-### Implementation
-* Tech Stack: Python, Playwright, TensorFlow/PyTorch, BeautifulSoup/Scrapy for web scraping.
-* Dataset: Kaggle’s fake job posting dataset + newly collected listings.
-* Training & Testing: Split into 80/20 for model validation.
-
-### Expected Outcomes
-* A web-based API or browser extension that flags suspicious job postings.
-* Dashboard for recruiters to verify job authenticity.
-* Research contribution on adversarially resilient fraud detection
+Metrics for evaluation:
+- Accuracy of AI’s scoring vs. human judges.
+- Ability to detect muscle symmetry and proportion.
+### Develop Evaluation System
+- Build a web app or local program where users upload images.
+- AI will analyze the pose and predict a score.
+- Compare AI-generated scores with real competition results to test accuracy.
+### Testing & Refinement
+- Evaluate model performance on different lighting, angles, and physiques.
+- Improve training data by augmenting images or adding new ones.
+### Technical Report & Video Presentation
+- Document your AI model selection, training process, and findings.
+- Show AI evaluations alongside real competition scores in your video.
