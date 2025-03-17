@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from keras.models import load_model
+from tensorflow.keras.models import load_model  # type: ignore
 from PIL import Image, ImageOps
 import h5py
 
@@ -28,6 +28,22 @@ clear_command = 'cls' if os.name == 'nt' else 'clear'
 os.system(clear_command)
 print("Current working directory:", working_directory)
 
+# this function will detect negative samples and low confidence poses to filter out images that aren't related to the pose detection model
+def analyze_pose(prediction, confidence_threshold=0.5):
+    """
+    Analyze if the pose is valid
+    Returns: (is_valid, message, confidence_score)
+    """
+    index = np.argmax(prediction)
+    confidence_score = prediction[0][index]
+    
+    # Only check confidence threshold
+    if confidence_score < confidence_threshold:
+        return False, "Low confidence - Pose not clear", confidence_score
+    
+    # All poses are valid if they meet confidence threshold
+    return True, "Valid pose detected", confidence_score
+
 while(True):
     # Prompt user for an image path
     image_path = input("Enter the path to an image: ").strip()
@@ -48,11 +64,15 @@ while(True):
 
         # Perform prediction
         prediction = model.predict(input_data)
-        index = np.argmax(prediction)
-        predicted_class = class_names[index]
-        confidence_score = prediction[0][index]
-
-
-        print("Class:", predicted_class[2:], end=" ")
-        print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+        is_valid, message, confidence_score = analyze_pose(prediction)
+        
+        if is_valid:
+            index = np.argmax(prediction)
+            predicted_class = class_names[index]
+            print("Class:", predicted_class[2:], end=" ")
+            print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+        else:
+            print(message)
+            print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+            print("Please try a different pose")
 
