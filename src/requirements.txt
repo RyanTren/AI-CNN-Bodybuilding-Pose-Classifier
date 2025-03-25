@@ -1,0 +1,4 @@
+numpy
+tensorflow
+Pillow
+h5py
