@@ -21,8 +21,33 @@ with h5py.File("src\\ComputerVision\\keras_model.h5", "r+") as f:
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
-# Load the model and labels
-model = load_model("src\\ComputerVision\\keras_model.h5", compile=False)
+def create_modified_model():
+    # Load the base model
+    base_model = load_model("src\\ComputerVision\\keras_model.h5", compile=False)
+    
+    # Create a new Sequential model
+    new_model = tf.keras.Sequential()
+    
+    # Add all layers except the last one from the base model
+    for layer in base_model.layers[:-1]:
+        new_model.add(layer)
+        
+    # Add new classification layer with 5 outputs
+    new_model.add(tf.keras.layers.Dense(5, activation='softmax'))
+    
+    # Compile the model
+    new_model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return new_model
+
+# Create the modified model
+model = create_modified_model()
+
+# Load the labels
 class_names = open("src\\ComputerVision\\labels.txt", "r").readlines()
 
 # Clear screen for Windows or Unix-based systems
@@ -32,9 +57,18 @@ print("Current working directory:", working_directory)
 
 def create_efficient_dataset(directory, batch_size=32):
     """
-    Optimized dataset creation with aggressive augmentation for limited data
+    Dataset creation for 5-class pose classification
     """
-    # Create the base dataset
+    # Define class names in alphabetical order to match directory structure
+    pose_classes = [
+        'Abs and Thighs',
+        'Back Double Bicep',
+        'Front Double Bicep',
+        'Negative_Sample',
+        'Side Chest'
+    ]
+
+    # Create the training dataset
     dataset = tf.keras.utils.image_dataset_from_directory(
         directory,
         batch_size=batch_size,
@@ -42,7 +76,9 @@ def create_efficient_dataset(directory, batch_size=32):
         seed=123,
         shuffle=True,
         validation_split=0.2,
-        subset="training"
+        subset="training",
+        label_mode='categorical',
+        class_names=pose_classes
     )
 
     # Create validation dataset
@@ -53,27 +89,17 @@ def create_efficient_dataset(directory, batch_size=32):
         seed=123,
         shuffle=True,
         validation_split=0.2,
-        subset="validation"
+        subset="validation",
+        label_mode='categorical',
+        class_names=pose_classes
     )
 
     def augment_images(x, y):
-        # Enhanced augmentation for limited data
         # Geometric transformations
         x = tf.image.random_flip_left_right(x)
-        x = tf.image.random_flip_up_down(x)
-        x = tf.image.random_rotation(x, 0.2)
-        x = tf.image.random_zoom(x, 0.2)
-        
-        # Color transformations
         x = tf.image.random_brightness(x, 0.3)
         x = tf.image.random_contrast(x, 0.7, 1.3)
         x = tf.image.random_saturation(x, 0.7, 1.3)
-        
-        # Add slight noise for robustness
-        noise = tf.random.normal(shape=tf.shape(x), mean=0.0, stddev=0.01)
-        x = x + noise
-        x = tf.clip_by_value(x, 0, 1)
-        
         return x, y
 
     # Optimize performance
@@ -89,9 +115,43 @@ def create_efficient_dataset(directory, batch_size=32):
     
     return train_dataset, val_dataset
 
+def verify_dataset_setup():
+    """
+    Verify the dataset structure for 5-class classification
+    """
+    base_path = 'src/ComputerVision'
+    expected_classes = ['Negative_Sample', 'Front Double Bicep', 'Back Double Bicep', 
+                       'Side Chest', 'Abs and Thighs']
+    
+    print("\nChecking dataset setup...")
+    print("-" * 50)
+    
+    all_exists = True
+    class_counts = {}
+    
+    for class_name in expected_classes:
+        class_path = os.path.join(base_path, class_name)
+        if not os.path.exists(class_path):
+            print(f"❌ '{class_name}' folder not found!")
+            print(f"Create it at: {class_path}")
+            all_exists = False
+        else:
+            # Count images in this class
+            images = len([f for f in os.listdir(class_path) 
+                        if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+            class_counts[class_name] = images
+            print(f"✓ Found {images} images in {class_name} folder")
+    
+    if class_counts:
+        print("\nClass distribution:")
+        for class_name, count in class_counts.items():
+            print(f"{class_name}: {count} images")
+    
+    return all_exists
+
 def analyze_pose(prediction, confidence_threshold=0.6):
     """
-    Enhanced pose analysis with detailed feedback
+    Enhanced pose analysis for 5-class classification
     """
     index = np.argmax(prediction)
     confidence_score = prediction[0][index]
@@ -102,14 +162,7 @@ def analyze_pose(prediction, confidence_threshold=0.6):
         else:
             return False, "Low confidence - Adjust pose or lighting", confidence_score
     
-    return True, "Valid pose detected", confidence_score
-
-# Load model and compile with optimizations
-model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
-    loss='binary_crossentropy',
-    metrics=['accuracy']
-)
+    return True, f"Valid {class_names[index].strip()} pose detected", confidence_score
 
 # Training setup
 early_stopping = tf.keras.callbacks.EarlyStopping(
@@ -118,55 +171,14 @@ early_stopping = tf.keras.callbacks.EarlyStopping(
     restore_best_weights=True
 )
 
-def verify_dataset_setup():
-    """
-    Verify the dataset structure and print helpful information
-    """
-    base_path = 'src/ComputerVision'
-    good_path = os.path.join(base_path, 'good_image')
-    bad_path = os.path.join(base_path, 'bad_image')
-    
-    print("\nChecking dataset setup...")
-    print("-" * 50)
-    
-    # Check directories exist
-    if not os.path.exists(good_path):
-        print("❌ 'good_image' folder not found!")
-        print(f"Create it at: {good_path}")
-        return False
-    
-    if not os.path.exists(bad_path):
-        print("❌ 'bad_image' folder not found!")
-        print(f"Create it at: {bad_path}")
-        return False
-    
-    # Count images
-    good_images = len([f for f in os.listdir(good_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-    bad_images = len([f for f in os.listdir(bad_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-    
-    print(f"✓ Found {good_images} images in good_image folder")
-    print(f"✓ Found {bad_images} images in bad_image folder")
-    
-    # Provide recommendations
-    if good_images < 50 or bad_images < 50:
-        print("\nRecommendation: Add more images for better training")
-        print("Aim for at least 50 images in each category")
-    
-    if abs(good_images - bad_images) > min(good_images, bad_images) * 0.3:
-        print("\nWarning: Dataset is imbalanced")
-        print("Try to keep similar numbers of good and bad images")
-    
-    return True
-
-# Add this before training
+# Train if dataset is properly set up
 if verify_dataset_setup():
     train_ds, val_ds = create_efficient_dataset('src/ComputerVision')
     model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=50,
-        callbacks=[early_stopping],
-        class_weight={0: 1.0, 1: 1.0}  # Adjust based on your class distribution
+        callbacks=[early_stopping]
     )
 else:
     print("\nPlease set up your dataset before training")
@@ -192,22 +204,14 @@ while(True):
         input_data = normalized_img.reshape(1, 224, 224, 3)
 
         # Perform prediction
-        prediction = model.predict(input_data, verbose=0)  # Reduce output noise
+        prediction = model.predict(input_data, verbose=0)
         is_valid, message, confidence_score = analyze_pose(prediction)
         
-        if is_valid:
-            index = np.argmax(prediction)
-            predicted_class = class_names[index]
-            print("\nResults:")
-            print("-" * 40)
-            print(f"Class: {predicted_class[2:]}")
-            print(f"Confidence: {str(np.round(confidence_score * 100))[:-2]}%")
-            print(f"Status: {message}")
-        else:
-            print("\nResults:")
-            print("-" * 40)
-            print(f"Status: {message}")
-            print(f"Confidence: {str(np.round(confidence_score * 100))[:-2]}%")
+        print("\nResults:")
+        print("-" * 40)
+        print(f"Detected Pose: {message}")
+        print(f"Confidence: {str(np.round(confidence_score * 100))[:-2]}%")
+        if not is_valid:
             print("Suggestion: Try adjusting pose, lighting, or camera angle")
             
     except Exception as e:
