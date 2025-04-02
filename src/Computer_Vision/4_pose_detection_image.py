@@ -118,15 +118,59 @@ early_stopping = tf.keras.callbacks.EarlyStopping(
     restore_best_weights=True
 )
 
-# Create and train datasets
-train_ds, val_ds = create_efficient_dataset('src/ComputerVision')
-model.fit(
-    train_ds,
-    validation_data=val_ds,
-    epochs=50,
-    callbacks=[early_stopping],
-    class_weight={0: 1.0, 1: 1.0}  # Adjust based on your class distribution
-)
+def verify_dataset_setup():
+    """
+    Verify the dataset structure and print helpful information
+    """
+    base_path = 'src/ComputerVision'
+    good_path = os.path.join(base_path, 'good_image')
+    bad_path = os.path.join(base_path, 'bad_image')
+    
+    print("\nChecking dataset setup...")
+    print("-" * 50)
+    
+    # Check directories exist
+    if not os.path.exists(good_path):
+        print("❌ 'good_image' folder not found!")
+        print(f"Create it at: {good_path}")
+        return False
+    
+    if not os.path.exists(bad_path):
+        print("❌ 'bad_image' folder not found!")
+        print(f"Create it at: {bad_path}")
+        return False
+    
+    # Count images
+    good_images = len([f for f in os.listdir(good_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+    bad_images = len([f for f in os.listdir(bad_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+    
+    print(f"✓ Found {good_images} images in good_image folder")
+    print(f"✓ Found {bad_images} images in bad_image folder")
+    
+    # Provide recommendations
+    if good_images < 50 or bad_images < 50:
+        print("\nRecommendation: Add more images for better training")
+        print("Aim for at least 50 images in each category")
+    
+    if abs(good_images - bad_images) > min(good_images, bad_images) * 0.3:
+        print("\nWarning: Dataset is imbalanced")
+        print("Try to keep similar numbers of good and bad images")
+    
+    return True
+
+# Add this before training
+if verify_dataset_setup():
+    train_ds, val_ds = create_efficient_dataset('src/ComputerVision')
+    model.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=50,
+        callbacks=[early_stopping],
+        class_weight={0: 1.0, 1: 1.0}  # Adjust based on your class distribution
+    )
+else:
+    print("\nPlease set up your dataset before training")
+    exit(1)
 
 # Main prediction loop
 while(True):
