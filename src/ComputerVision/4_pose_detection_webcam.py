@@ -6,23 +6,21 @@ print("Current working directory:", os.getcwd())
 
 import h5py
 
-with h5py.File("src\\ComputerVision\\keras_model.h5", "r+") as f:
-    model_config = f.attrs.get("model_config")
-    # Since model_config is a string, use a string literal for the search
-    if model_config and '"groups": 1,' in model_config:
-        new_config = model_config.replace('"groups": 1,', '')
-        f.attrs.modify("model_config", new_config)
-        f.flush()
+# with h5py.File("src\\ComputerVision\\keras_model.h5", "r+") as f:
+#     model_config = f.attrs.get("model_config")
+#     # Since model_config is a string, use a string literal for the search
+#     if model_config and '"groups": 1,' in model_config:
+#         new_config = model_config.replace('"groups": 1,', '')
+#         f.attrs.modify("model_config", new_config)
+#         f.flush()
 
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
-# Load the model
-model = load_model("src\\ComputerVision\\keras_model.h5", compile=False)
-
-# Load the labels
-class_names = open("src\\ComputerVision\\labels.txt", "r").readlines()
+# Load the model and labels
+model = load_model("src\\Training Testing\\Custom Models\\bb_pose_model_2025-04-02.h5", compile=False)
+class_names = open("src\\Training Testing\\Custom Models\\labels_2025-04-02.txt", "r").readlines()
 
 # CAMERA can be 0 or 1 based on default camera of your computer
 camera = cv2.VideoCapture(0)

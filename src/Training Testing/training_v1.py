@@ -85,10 +85,8 @@ model.summary()
 print("Starting model training...")
 history = model.fit(
     train_generator,
-    steps_per_epoch=train_generator.samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=validation_generator.samples // batch_size
 )
 print("Training complete.")
 
@@ -111,3 +109,20 @@ model_filename = f"bb_pose_model_{today}.h5"
 save_path = os.path.join(save_dir, model_filename)
 model.save(save_path)
 print(f"Model saved to {save_path}")
+
+# -------------------------------
+# Generate and Save the labels.txt File
+# -------------------------------
+print("Generating labels file...")
+# Get the class indices from the training generator and sort them by index.
+class_indices = train_generator.class_indices
+sorted_classes = sorted(class_indices.items(), key=lambda x: x[1])
+
+# Create a labels file with today's date (e.g., "labels_2025-04-02.txt")
+labels_filename = f"labels_{today}.txt"
+labels_path = os.path.join(save_dir, labels_filename)
+
+with open(labels_path, "w") as f:
+    for class_name, idx in sorted_classes:
+        f.write(f"{idx} {class_name}\n")
+print(f"Labels saved to {labels_path}")

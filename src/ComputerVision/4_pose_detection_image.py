@@ -8,20 +8,20 @@ import h5py
 working_directory = os.getcwd()
 print("Current working directory:", working_directory)
 
-# Patch the model file to remove the problematic "groups" parameter
-with h5py.File("src\\ComputerVision\\keras_model.h5", "r+") as f:
-    model_config = f.attrs.get("model_config")
-    if model_config and '"groups": 1,' in model_config:
-        new_config = model_config.replace('"groups": 1,', '')
-        f.attrs.modify("model_config", new_config)
-        f.flush()
+# # Patch the model file to remove the problematic "groups" parameter
+# with h5py.File("src\\ComputerVision\\keras_model.h5", "r+") as f:
+#     model_config = f.attrs.get("model_config")
+#     if model_config and '"groups": 1,' in model_config:
+#         new_config = model_config.replace('"groups": 1,', '')
+#         f.attrs.modify("model_config", new_config)
+#         f.flush()
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
 # Load the model and labels
-model = load_model("src\\ComputerVision\\keras_model.h5", compile=False)
-class_names = open("src\\ComputerVision\\labels.txt", "r").readlines()
+model = load_model("src\\Training Testing\\Custom Models\\bb_pose_model_2025-04-02.h5", compile=False)
+class_names = open("src\\Training Testing\\Custom Models\\labels_2025-04-02.txt", "r").readlines()
 
 # Clear screen for Windows or Unix-based systems
 clear_command = 'cls' if os.name == 'nt' else 'clear'
