@@ -10,6 +10,7 @@ import datetime
 # -------------------------------
 # Parameters & File Paths
 # -------------------------------
+print("Setting parameters and file paths...")
 img_height, img_width = 224, 224      # Dimensions expected by MobileNetV2
 batch_size = 32
 epochs = 10                         # Adjust number of epochs as needed
@@ -20,7 +21,7 @@ data_dir = r"C:\Users\Colin\OneDrive\Pictures\bb_training_data"
 # -------------------------------
 # Data Preparation with Augmentation
 # -------------------------------
-# Use validation_split to automatically reserve a portion of data for validation.
+print("Starting data preparation with augmentation...")
 datagen = ImageDataGenerator(
     rescale=1./255,                # Normalize pixel values to [0,1]
     rotation_range=20,             # Random rotations for augmentation
@@ -33,7 +34,7 @@ datagen = ImageDataGenerator(
     validation_split=0.2           # Reserve 20% of images for validation
 )
 
-# Create training generator (using 80% of the data)
+print("Creating training generator...")
 train_generator = datagen.flow_from_directory(
     data_dir,
     target_size=(img_height, img_width),
@@ -43,7 +44,7 @@ train_generator = datagen.flow_from_directory(
     shuffle=True
 )
 
-# Create validation generator (using the remaining 20% of the data)
+print("Creating validation generator...")
 validation_generator = datagen.flow_from_directory(
     data_dir,
     target_size=(img_height, img_width),
@@ -56,34 +57,32 @@ validation_generator = datagen.flow_from_directory(
 # -------------------------------
 # Model Definition Using Transfer Learning
 # -------------------------------
-# Load MobileNetV2 with pre-trained ImageNet weights and exclude the top layers.
+print("Loading base model (MobileNetV2) with pre-trained ImageNet weights...")
 base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
 
-# Freeze the base model's layers so they are not updated during training.
+print("Freezing base model layers...")
 base_model.trainable = False
 
-# Add new layers on top of the base model.
+print("Adding custom layers on top of the base model...")
 x = base_model.output
 x = GlobalAveragePooling2D()(x)         # Reduce spatial dimensions to a vector
 x = Dense(128, activation='relu')(x)      # Fully-connected layer with 128 neurons
 x = Dropout(0.5)(x)                       # Dropout for regularization to avoid overfitting
 predictions = Dense(train_generator.num_classes, activation='softmax')(x)  # Final classification layer
 
-# Combine the base model and the new layers into one model.
+print("Compiling the model...")
 model = Model(inputs=base_model.input, outputs=predictions)
-
-# Compile the model with Adam optimizer and categorical crossentropy loss.
 model.compile(optimizer=Adam(learning_rate=0.001),
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
-# Print the model summary to see the architecture.
+print("Model summary:")
 model.summary()
 
 # -------------------------------
 # Training the Model
 # -------------------------------
-# Fit the model using the training and validation generators.
+print("Starting model training...")
 history = model.fit(
     train_generator,
     steps_per_epoch=train_generator.samples // batch_size,
@@ -91,10 +90,12 @@ history = model.fit(
     validation_data=validation_generator,
     validation_steps=validation_generator.samples // batch_size
 )
+print("Training complete.")
 
 # -------------------------------
 # Save the Trained Model to a Relative Path
 # -------------------------------
+print("Preparing to save the model...")
 # Get the directory where the script is located.
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
