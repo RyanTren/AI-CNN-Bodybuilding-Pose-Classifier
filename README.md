@@ -31,29 +31,31 @@ AI-Based-Fake-Job-Posting-Detector/
     * Common mistakes in poses
 
 
-## requirements to run model!
-- First have conda installed, then create an environment in the project's terminal.
+## Setup Instructions
 
-```ps
-conda init powershell
-conda --version
+### 1. Install Conda
+If you don't have Conda installed, download and install it from: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
+
+### 2. Create and Activate Environment
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/AI-Based-Fake-Job-Posting-Detector.git
+cd AI-Based-Fake-Job-Posting-Detector
+
+# Create environment from environment.yml
+conda env create -f environment.yml
+
+# Activate the environment
+conda activate cv-env
 ```
 
-```ps
-conda create -n new-cv-env python=3.10
-conda activate new-cv-env
-conda install -c conda-forge opencv
-conda install tensorflow
-conda install pillow h5py
-
-
-conda install ultralytics 
-conda install -c conda-forge ultralytics #yolo8 library dependency
-conda install torch torchvision torchaudio                                                                                                                           
-                                                                 
+### 3. Run Jupyter Notebook
+```bash
+# Start Jupyter Notebook
+jupyter notebook
 ```
 
-- This will help us install all the tensorflow dependencies used to run the Keras Computer Vision model
+Then open `src/Deep_CNN_Bodybuilding_Classifier.ipynb` in your browser.
 
 ## Notes on Implementations/Iterations
 ### Notes on First implementation: 
