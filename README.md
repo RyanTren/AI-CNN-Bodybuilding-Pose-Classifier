@@ -92,7 +92,7 @@ A custom data collection script was developed to automate the process:
 
 ## 7. Comparison with Alternative Model
 
-| Feature                     | Transfer Learning Model  | Custom CNN Model  |
+| Feature                     | Transfer Learning Model (This Project) | Custom CNN Model (Alternative) |
 |-----------------------------|----------------------------------------|--------------------------------|
 | **Base Architecture**       | MobileNetV2 (Pre-trained)              | Custom-built CNN               |
 | **Training Time**           | Shorter due to pre-trained layers      | Longer, trained from scratch   |
