@@ -1,15 +1,15 @@
 # Bodybuilding Pose Classification Using Transfer Learning
 
 ## Table of Contents
-1. Introduction
-2. Project Overview
-3. Project Goal
-4. Implementation Details
-5. Data Collection
-6. Model Training
-7. Known Limitations
-8. Comparison with Alternative Model
-9. References
+1. [Introduction](#1-introduction)
+2. [Project Overview](#2-project-overview)
+3. [Project Goal](#3-project-goal)
+4. [Implementation Details](#4-implementation-details)
+5. [Data Collection](#5-data-collection)
+6. [Model Training](#6-model-training)
+7. [Known Limitations](#7-known-limitations)
+8. [Comparison with Alternative Model](#8-comparison-with-alternative-model)
+9. [References](#9-references)
 
 ---
 
