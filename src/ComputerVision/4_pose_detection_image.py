@@ -20,7 +20,7 @@ print("Current working directory:", working_directory)
 np.set_printoptions(suppress=True)
 
 # Load the model and labels
-model = load_model("src\\Training Testing\\Custom Models\\bb_pose_model_2025-04-19.h5", compile=False)
+model = load_model("src\\Training Testing\\Custom Models\\(BEST)bb_pose_model_2025-04-19.h5", compile=False)
 class_names = open("src\\Training Testing\\Custom Models\\labels_2025-04-02.txt", "r").readlines()
 
 # Clear screen for Windows or Unix-based systems

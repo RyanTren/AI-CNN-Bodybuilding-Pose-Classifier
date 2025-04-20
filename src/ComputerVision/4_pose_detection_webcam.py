@@ -19,7 +19,7 @@ import h5py
 np.set_printoptions(suppress=True)
 
 # Load the model and labels
-model = load_model("src\\Training Testing\\Custom Models\\bb_pose_model_2025-04-19.h5", compile=False)
+model = load_model("src\\Training Testing\\Custom Models\\bb_pose_model_2025-04-20.h5", compile=False)
 class_names = open("src\\Training Testing\\Custom Models\\labels_2025-04-02.txt", "r").readlines()
 
 # CAMERA can be 0 or 1 based on default camera of your computer
