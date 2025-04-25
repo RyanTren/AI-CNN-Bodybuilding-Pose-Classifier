@@ -10,4 +10,15 @@ Each method is stored in its own folder with detailed documentation, code, train
 - [`Custom CNN/`](./Custom%20CNN) – Fully custom model architecture.
 - [`Transfer Learning CNN/`](./Transfer%20Learning%20CNN) – Transfer learning implementation with MobileNetV2.
 
-Refer to the README files in each folder for complete information about the models, results, and usage.
+> Refer to the README files in each folder for complete information about the models, results, and usage.
+
+
+| Feature                     | Transfer Learning Model | Custom CNN Model |
+|-----------------------------|----------------------------------------|--------------------------------|
+| **Base Architecture**       | MobileNetV2 (Pre-trained)              | Custom-built CNN               |
+| **Training Time**           | Shorter due to pre-trained layers      | Longer, trained from scratch   |
+| **Data Requirement**        | Less data needed                      | Requires more data             |
+| **Performance**             | Higher initial accuracy                | Potential for higher accuracy with sufficient data |
+| **Flexibility**             | Limited to MobileNetV2 architecture    | Fully customizable             |
+| **Complexity**              | Easier to implement                    | More complex implementation    |
+
