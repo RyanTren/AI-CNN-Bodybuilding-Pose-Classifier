@@ -1,0 +1,15 @@
+# get rid of all the python files
+*.venv
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+
+# any api keys won't show
+*.env
+
+# Training monitoring
+training_history_*.png
+best_model_*.h5
+training_log.csv

@@ -1,0 +1,5 @@
+0 Negative_Sample
+1 Front Double Bicep
+2 Back Double Bicep
+3 Side Chest
+4 Abs and Thighs
